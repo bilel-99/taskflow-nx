@@ -1,19 +1,30 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
 import { Task } from '@taskflow/data-models';
 import { formatDate, isPastDue } from '@taskflow/utils';
 
 @Component({
   selector: 'lib-task-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+  ],
   templateUrl: './task-card.component.html',
-  styleUrl: './task-card.component.css',
+  styleUrl: './task-card.component.scss',
 })
 export class TaskCardComponent {
-  @Input() task!: Task;
-  @Output() toggleComplete = new EventEmitter<string>();
-  @Output() deleteTask = new EventEmitter<string>();
+  task = input.required<Task>();
+  toggleComplete = output<string>();
+  deleteTask = output<string>();
+  editTask = output<Task>();
 
   formatDate(date: Date): string {
     return formatDate(date);
@@ -24,10 +35,14 @@ export class TaskCardComponent {
   }
 
   onToggleComplete(): void {
-    this.toggleComplete.emit(this.task.id);
+    this.toggleComplete.emit(this.task().id);
   }
 
   onDelete(): void {
-    this.deleteTask.emit(this.task.id);
+    this.deleteTask.emit(this.task().id);
+  }
+
+  onEdit(): void {
+    this.editTask.emit(this.task());
   }
 }

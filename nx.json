@@ -54,11 +54,11 @@
     "@nx/angular:application": {
       "e2eTestRunner": "playwright",
       "linter": "eslint",
-      "style": "css",
+      "style": "scss",
       "unitTestRunner": "jest"
     },
     "@nx/angular:library": { "linter": "eslint", "unitTestRunner": "jest" },
-    "@nx/angular:component": { "style": "css" }
+    "@nx/angular:component": { "style": "scss" }
   },
   "nxCloudId": "6909f2504beabea108ef73ba"
 }

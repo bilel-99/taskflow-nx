@@ -1,0 +1,83 @@
+// SCSS Variables
+$completed-opacity: 0.7;
+$text-muted: #666;
+$text-strikethrough: #999;
+$overdue-bg: #ffebee;
+$overdue-color: #f44336;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$transition-time: 0.3s;
+
+.task-card {
+  margin-bottom: $spacing-md;
+  transition: all $transition-time ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &.completed {
+    opacity: $completed-opacity;
+
+    mat-card-title {
+      text-decoration: line-through;
+      color: $text-strikethrough;
+    }
+  }
+}
+
+mat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-md;
+}
+
+mat-card-title {
+  flex: 1;
+}
+
+.delete-btn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+}
+
+.task-description {
+  color: $text-muted;
+  margin: 0 0 $spacing-md 0;
+  line-height: 1.5;
+}
+
+.task-footer {
+  margin-top: $spacing-md;
+}
+
+mat-chip-set {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+mat-chip {
+  font-weight: 500;
+
+  &.overdue {
+    background-color: $overdue-bg !important;
+    color: $overdue-color !important;
+  }
+
+  &.completed-chip {
+    opacity: $completed-opacity;
+  }
+}
+
+mat-card-actions {
+  padding: 8px 16px;
+  margin: 0;
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    flex: 1;
+  }
+}
