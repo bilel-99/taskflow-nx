@@ -111,6 +111,9 @@ jobs:
 
       - uses: nrwl/nx-set-shas@v4
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: Run E2E tests
         run: npx nx affected -t e2e --parallel=2
         env:
