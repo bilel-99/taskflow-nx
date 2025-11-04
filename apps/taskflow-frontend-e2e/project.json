@@ -1,0 +1,9 @@
+{
+  "name": "taskflow-frontend-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/taskflow-frontend-e2e/src",
+  "implicitDependencies": ["taskflow-frontend"],
+  "// targets": "to see all targets run: nx show project taskflow-frontend-e2e --web",
+  "targets": {}
+}
