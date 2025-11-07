@@ -1,34 +1,54 @@
-<div class="task-card" [class.completed]="task.completed">
-  <div class="task-header">
-    <h3 class="task-title">{{ task.title }}</h3>
+<mat-card class="task-card" [class.completed]="task().completed">
+  <mat-card-header>
+    <mat-card-title>{{ task().title }}</mat-card-title>
     <button
+      mat-icon-button
+      color="warn"
       class="delete-btn"
       (click)="onDelete()"
       aria-label="Supprimer la tâche"
     >
-      ✕
+      <mat-icon>delete</mat-icon>
     </button>
-  </div>
+  </mat-card-header>
 
-  <p class="task-description">{{ task.description }}</p>
+  <mat-card-content>
+    <p class="task-description">{{ task().description }}</p>
 
-  <div class="task-footer">
-    <div
-      class="task-date"
-      [class.overdue]="!task.completed && isPastDue(task.dueDate)"
-    >
-      <span class="date-label">Échéance:</span>
-      <span class="date-value">{{ formatDate(task.dueDate) }}</span>
+    <div class="task-footer">
+      <mat-chip-set>
+        <mat-chip
+          [class.overdue]="!task().completed && isPastDue(task().dueDate)"
+          [class.completed-chip]="task().completed"
+        >
+          <mat-icon matChipAvatar>event</mat-icon>
+          {{ formatDate(task().dueDate) }}
+        </mat-chip>
+        <mat-chip
+          [highlighted]="task().completed"
+          [color]="task().completed ? 'primary' : 'accent'"
+        >
+          <mat-icon matChipAvatar>{{
+            task().completed ? 'check_circle' : 'pending'
+          }}</mat-icon>
+          {{ task().completed ? 'Terminée' : 'En cours' }}
+        </mat-chip>
+      </mat-chip-set>
     </div>
+  </mat-card-content>
 
-    <label class="checkbox-container">
-      <input
-        type="checkbox"
-        [checked]="task.completed"
-        (change)="onToggleComplete()"
-      />
-      <span class="checkmark"></span>
-      {{ task.completed ? 'Terminée' : 'En cours' }}
-    </label>
-  </div>
-</div>
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      [color]="task().completed ? 'warn' : 'primary'"
+      (click)="onToggleComplete()"
+    >
+      <mat-icon>{{ task().completed ? 'undo' : 'check' }}</mat-icon>
+      {{ task().completed ? 'Réactiver' : 'Terminer' }}
+    </button>
+    <button mat-button color="accent" (click)="onEdit()">
+      <mat-icon>edit</mat-icon>
+      Modifier
+    </button>
+  </mat-card-actions>
+</mat-card>

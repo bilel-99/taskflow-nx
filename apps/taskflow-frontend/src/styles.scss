@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+// SCSS Variables
+$primary-gradient-start: #e3f2fd;
+$primary-gradient-end: #bbdefb;
+$font-stack: Roboto, 'Helvetica Neue', sans-serif;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-stack;
+  background: linear-gradient(
+    135deg,
+    $primary-gradient-start 0%,
+    $primary-gradient-end 100%
+  );
+  min-height: 100vh;
+}

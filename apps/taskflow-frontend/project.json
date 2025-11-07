@@ -20,7 +20,7 @@
             "input": "apps/taskflow-frontend/public"
           }
         ],
-        "styles": ["apps/taskflow-frontend/src/styles.css"]
+        "styles": ["apps/taskflow-frontend/src/styles.scss"]
       },
       "configurations": {
         "production": {

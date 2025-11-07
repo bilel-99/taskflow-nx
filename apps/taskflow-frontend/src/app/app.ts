@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Task, CreateTaskDto } from '@taskflow/data-models';
+import { Task, CreateTaskDto, UpdateTaskDto } from '@taskflow/data-models';
 import { TaskCardComponent } from '@taskflow/ui-components';
 import { TaskService } from './services/task.service';
 
@@ -10,17 +10,20 @@ import { TaskService } from './services/task.service';
   imports: [CommonModule, RouterModule, FormsModule, TaskCardComponent],
   selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  styleUrl: './app.scss',
 })
 export class App implements OnInit {
   protected title = 'TaskFlow';
   tasks: Task[] = [];
   showForm = false;
+  isEditMode = false;
+  editingTaskId: string | null = null;
+  filterStatus: 'all' | 'pending' | 'completed' = 'all';
 
-  newTask: CreateTaskDto = {
+  newTask: { title: string; description: string; dueDate: string | Date } = {
     title: '',
     description: '',
-    dueDate: new Date(),
+    dueDate: this.getDefaultDate(),
   };
 
   private readonly taskService = inject(TaskService);
@@ -47,16 +50,69 @@ export class App implements OnInit {
     }
   }
 
+  openEditForm(task: Task): void {
+    this.isEditMode = true;
+    this.editingTaskId = task.id;
+    this.showForm = true;
+
+    // Convertir la date au format YYYY-MM-DD pour l'input date
+    const date = new Date(task.dueDate);
+    const formattedDate = date.toISOString().split('T')[0];
+
+    this.newTask = {
+      title: task.title,
+      description: task.description,
+      dueDate: formattedDate,
+    };
+  }
   createTask(): void {
     if (this.newTask.title && this.newTask.description) {
-      this.taskService.createTask(this.newTask).subscribe({
-        next: (task) => {
-          this.tasks.push(task);
+      if (this.isEditMode && this.editingTaskId) {
+        // Mode édition
+        this.updateTask();
+      } else {
+        // Mode création
+        const taskDto: CreateTaskDto = {
+          title: this.newTask.title,
+          description: this.newTask.description,
+          dueDate: new Date(this.newTask.dueDate),
+        };
+
+        this.taskService.createTask(taskDto).subscribe({
+          next: (task) => {
+            this.tasks.push(task);
+            this.resetForm();
+            this.showForm = false;
+          },
+          error: (error) => {
+            console.error('Error creating task:', error);
+          },
+        });
+      }
+    }
+  }
+
+  updateTask(): void {
+    if (this.editingTaskId) {
+      const updateDto: UpdateTaskDto = {
+        title: this.newTask.title,
+        description: this.newTask.description,
+        dueDate: new Date(this.newTask.dueDate),
+      };
+
+      this.taskService.updateTask(this.editingTaskId, updateDto).subscribe({
+        next: (updatedTask) => {
+          const index = this.tasks.findIndex(
+            (t) => t.id === this.editingTaskId
+          );
+          if (index !== -1) {
+            this.tasks[index] = updatedTask;
+          }
           this.resetForm();
           this.showForm = false;
         },
         error: (error) => {
-          console.error('Error creating task:', error);
+          console.error('Error updating task:', error);
         },
       });
     }
@@ -94,8 +150,30 @@ export class App implements OnInit {
     this.newTask = {
       title: '',
       description: '',
-      dueDate: new Date(),
+      dueDate: this.getDefaultDate(),
     };
+    this.isEditMode = false;
+    this.editingTaskId = null;
+  }
+
+  getDefaultDate(): string {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  }
+
+  setFilter(status: 'all' | 'pending' | 'completed'): void {
+    this.filterStatus = status;
+  }
+
+  get filteredTasks(): Task[] {
+    switch (this.filterStatus) {
+      case 'pending':
+        return this.tasks.filter((t) => !t.completed);
+      case 'completed':
+        return this.tasks.filter((t) => t.completed);
+      default:
+        return this.tasks;
+    }
   }
 
   get completedTasks(): Task[] {

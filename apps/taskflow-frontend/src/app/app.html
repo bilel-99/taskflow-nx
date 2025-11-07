@@ -5,15 +5,42 @@
   </header>
 
   <div class="stats">
-    <div class="stat-card">
+    <div
+      class="stat-card clickable"
+      [class.active]="filterStatus === 'all'"
+      (click)="setFilter('all')"
+      (keydown.enter)="setFilter('all')"
+      (keydown.space)="setFilter('all')"
+      tabindex="0"
+      role="button"
+      [attr.aria-pressed]="filterStatus === 'all'"
+    >
       <span class="stat-number">{{ tasks.length }}</span>
       <span class="stat-label">Tâches totales</span>
     </div>
-    <div class="stat-card pending">
+    <div
+      class="stat-card pending clickable"
+      [class.active]="filterStatus === 'pending'"
+      (click)="setFilter('pending')"
+      (keydown.enter)="setFilter('pending')"
+      (keydown.space)="setFilter('pending')"
+      tabindex="0"
+      role="button"
+      [attr.aria-pressed]="filterStatus === 'pending'"
+    >
       <span class="stat-number">{{ pendingTasks.length }}</span>
       <span class="stat-label">En cours</span>
     </div>
-    <div class="stat-card completed">
+    <div
+      class="stat-card completed clickable"
+      [class.active]="filterStatus === 'completed'"
+      (click)="setFilter('completed')"
+      (keydown.enter)="setFilter('completed')"
+      (keydown.space)="setFilter('completed')"
+      tabindex="0"
+      role="button"
+      [attr.aria-pressed]="filterStatus === 'completed'"
+    >
       <span class="stat-number">{{ completedTasks.length }}</span>
       <span class="stat-label">Terminées</span>
     </div>
@@ -25,8 +52,9 @@
     </button>
   </div>
 
-  <div class="form-container" *ngIf="showForm">
-    <h2>Créer une nouvelle tâche</h2>
+  @if (showForm) {
+  <div class="form-container">
+    <h2>{{ isEditMode ? 'Modifier la tâche' : 'Créer une nouvelle tâche' }}</h2>
     <form (ngSubmit)="createTask()" #taskForm="ngForm">
       <div class="form-group">
         <label for="title">Titre *</label>
@@ -64,40 +92,34 @@
       </div>
 
       <button type="submit" class="btn-primary" [disabled]="!taskForm.valid">
-        Créer la tâche
+        {{ isEditMode ? 'Enregistrer les modifications' : 'Créer la tâche' }}
       </button>
     </form>
   </div>
+  }
 
   <div class="tasks-section">
-    <h2 *ngIf="pendingTasks.length > 0">
-      Tâches en cours ({{ pendingTasks.length }})
-    </h2>
-    <div class="tasks-list" *ngIf="pendingTasks.length > 0">
+    @if (filteredTasks.length > 0) {
+    <div class="tasks-list">
+      @for (task of filteredTasks; track task.id) {
       <lib-task-card
-        *ngFor="let task of pendingTasks"
         [task]="task"
         (toggleComplete)="toggleTaskCompletion($event)"
         (deleteTask)="deleteTask($event)"
+        (editTask)="openEditForm($event)"
       ></lib-task-card>
+      }
     </div>
-
-    <h2 *ngIf="completedTasks.length > 0" class="completed-header">
-      Tâches terminées ({{ completedTasks.length }})
-    </h2>
-    <div class="tasks-list" *ngIf="completedTasks.length > 0">
-      <lib-task-card
-        *ngFor="let task of completedTasks"
-        [task]="task"
-        (toggleComplete)="toggleTaskCompletion($event)"
-        (deleteTask)="deleteTask($event)"
-      ></lib-task-card>
+    } @if (filteredTasks.length === 0 && tasks.length > 0) {
+    <div class="empty-state">
+      <p>Aucune tâche dans cette catégorie</p>
     </div>
-
-    <div class="empty-state" *ngIf="tasks.length === 0">
+    } @if (tasks.length === 0) {
+    <div class="empty-state">
       <p>Aucune tâche pour le moment</p>
       <p class="empty-hint">Cliquez sur "Nouvelle tâche" pour commencer</p>
     </div>
+    }
   </div>
 </div>
 
