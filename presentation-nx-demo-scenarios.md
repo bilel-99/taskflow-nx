@@ -252,6 +252,8 @@ npx nx reset
 
 # Confirmer
 ls .nx/cache  # Dossier vide
+
+rm -rf .nx/cache
 ```
 
 **💬 Speech :**  
@@ -378,7 +380,7 @@ _"J'ai modifié `data-models`. Nx détecte que 4 projets sont affectés : data-m
 
 ```bash
 # Voir le graphe des projets affectés
-npx nx affected:graph --base=main
+npx nx graph --affected --base=main
 ```
 
 **💬 Speech :**  
@@ -576,7 +578,7 @@ time npx nx build taskflow-frontend  # 2e fois
 
 ```bash
 npx nx show projects --affected --base=main
-npx nx affected:graph --base=main
+npx nx graph --affected --base=main
 npx nx affected -t build --base=main
 ```
 
