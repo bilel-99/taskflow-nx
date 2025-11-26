@@ -265,7 +265,7 @@ _"Je vide le cache pour partir de zéro."_
 
 ```bash
 # Mesurer le temps du premier build du frontend
-time npx nx build taskflow-frontend
+time npx nx build taskflow-frontend --skip-nx-cache
 
 # Résultat attendu : ~20-30 secondes
 # Exemple : 28.5s
@@ -299,7 +299,7 @@ _"Deuxième build : 0.1 seconde ! C'est **300 fois plus rapide**. Nx a récupér
 
 ```bash
 # Modifier un fichier dans une lib
-echo "// Modification test" >> libs/utils/src/lib/utils.ts
+echo "// Modification test 2" >> libs/utils/src/lib/utils.ts
 
 # Rebuilder le frontend
 time npx nx build taskflow-frontend
@@ -362,7 +362,7 @@ _"Nx peut détecter automatiquement quels projets sont affectés par mes changem
 echo "export const APP_VERSION = '2.0.0';" >> libs/data-models/src/lib/data-models.ts
 
 # Voir les projets affectés
-npx nx show projects --affected --base=main
+npx nx show projects --affected --base=main --exclude='*-e2e'
 
 # Résultat attendu : 4 projets
 # - data-models
